@@ -3,6 +3,7 @@ import { Alert } from '../components/Alert'
 import { AREA_LABELS, AREAS, type Area } from '../data/areas'
 import { useLaterTasks, type LaterItem } from '../data/useLaterTasks'
 import { AreaChips } from './AreaChips'
+import { MoveToToday } from './MoveToToday'
 
 type Filter = Area | 'all'
 const FILTER_KEY = 'today.laterFilter'
@@ -35,6 +36,7 @@ export function LaterScreen() {
   const [draftArea, setDraftArea] = useState<Area | null>(null)
   const [filter, setFilter] = useState<Filter>(readFilter)
   const [editingAreaFor, setEditingAreaFor] = useState<string | null>(null)
+  const [movingId, setMovingId] = useState<string | null>(null)
   const inputRef = useRef<HTMLInputElement>(null)
 
   // Press N anywhere on this screen to start typing a new task.
@@ -172,6 +174,12 @@ export function LaterScreen() {
               }}
               onRetry={() => later.retry(item.id)}
               onDelete={() => later.remove(item.id)}
+              moving={movingId === item.id}
+              onStartMove={() => setMovingId(movingId === item.id ? null : item.id)}
+              onMoved={() => {
+                setMovingId(null)
+                later.dropMoved(item.id)
+              }}
             />
           ))}
         </ul>
@@ -187,13 +195,28 @@ type RowProps = {
   onSetArea: (area: Area | null) => void
   onRetry: () => void
   onDelete: () => void
+  moving: boolean
+  onStartMove: () => void
+  onMoved: () => void
 }
 
-function TaskRow({ item, editingArea, onEditArea, onSetArea, onRetry, onDelete }: RowProps) {
+function TaskRow(props: RowProps) {
+  const { item, editingArea, onEditArea, onSetArea, onRetry, onDelete, moving, onStartMove, onMoved } = props
   return (
     <li className="task-row">
       <div className="task-line">
         <p className="task-title">{item.title}</p>
+        {item.save === 'saved' ? (
+          <button
+            type="button"
+            className="area-tag label"
+            aria-expanded={moving}
+            aria-label={`Move "${item.title}" to Today`}
+            onClick={onStartMove}
+          >
+            Today →
+          </button>
+        ) : null}
         <button
           type="button"
           className="area-tag label"
@@ -208,6 +231,9 @@ function TaskRow({ item, editingArea, onEditArea, onSetArea, onRetry, onDelete }
         </button>
       </div>
       {editingArea ? <AreaChips value={item.area} onChange={onSetArea} label="Choose an area" /> : null}
+      {moving ? (
+        <MoveToToday taskId={item.id} title={item.title} onMoved={onMoved} onCancel={onStartMove} />
+      ) : null}
       {item.save === 'saving' ? (
         <span className="label" aria-live="polite">
           Saving…

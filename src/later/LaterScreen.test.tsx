@@ -9,6 +9,12 @@ const api = vi.hoisted(() => ({
   deleteTask: vi.fn(),
 }))
 vi.mock('../data/tasks', () => api)
+const todayApi = vi.hoisted(() => ({ moveToToday: vi.fn() }))
+vi.mock('../data/today', async (importOriginal) => ({
+  ...(await importOriginal<typeof import('../data/today')>()),
+  ...todayApi,
+}))
+vi.mock('../lib/supabase', () => ({ supabase: {} }))
 
 const { LaterScreen } = await import('./LaterScreen')
 
@@ -127,5 +133,35 @@ describe('LaterScreen', () => {
     await screen.findByText('Clean survey data')
     fireEvent.keyDown(window, { key: 'n' })
     expect(screen.getByRole('textbox', { name: /new task/i })).toHaveFocus()
+  })
+
+  it('asks for a first step before moving a task to Today', async () => {
+    todayApi.moveToToday.mockResolvedValue(undefined)
+    render(<LaterScreen />)
+    await screen.findByText('Do laundry')
+    fireEvent.click(screen.getByRole('button', { name: /move "do laundry" to today/i }))
+    fireEvent.click(screen.getByRole('button', { name: /^move to today$/i }))
+    expect(screen.getByRole('alert')).toHaveTextContent(/first tiny step/i)
+    expect(todayApi.moveToToday).not.toHaveBeenCalled()
+
+    fireEvent.change(screen.getByRole('textbox', { name: /first step for "do laundry"/i }), {
+      target: { value: 'carry the basket' },
+    })
+    fireEvent.click(screen.getByRole('button', { name: /^move to today$/i }))
+    await waitFor(() => expect(todayApi.moveToToday).toHaveBeenCalledWith('t2', 'carry the basket'))
+    await waitFor(() => expect(screen.queryByText('Do laundry')).not.toBeInTheDocument())
+  })
+
+  it('explains when Today is already full', async () => {
+    todayApi.moveToToday.mockRejectedValue({ message: 'today_full' })
+    render(<LaterScreen />)
+    await screen.findByText('Do laundry')
+    fireEvent.click(screen.getByRole('button', { name: /move "do laundry" to today/i }))
+    fireEvent.change(screen.getByRole('textbox', { name: /first step for "do laundry"/i }), {
+      target: { value: 'carry the basket' },
+    })
+    fireEvent.click(screen.getByRole('button', { name: /^move to today$/i }))
+    expect(await screen.findByRole('alert')).toHaveTextContent(/today already has 3/i)
+    expect(screen.getByText('Do laundry')).toBeInTheDocument()
   })
 })

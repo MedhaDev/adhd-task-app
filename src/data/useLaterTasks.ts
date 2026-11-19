@@ -165,5 +165,7 @@ export function useLaterTasks() {
     remove,
     undoDelete,
     dismissError: () => setActionError(null),
+    /** Take a task off this list after it moved to Today (it isn't deleted). */
+    dropMoved: (id: string) => setItems((list) => list.filter((i) => i.id !== id)),
   }
 }
