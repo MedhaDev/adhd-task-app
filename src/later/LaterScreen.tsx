@@ -72,7 +72,7 @@ export function LaterScreen() {
 
       <form className="dump" onSubmit={submit}>
         <label className="field-label">
-          <span className="label">Brain dump · press N to jump here</span>
+          <span className="label">Brain dump · press N to jump here · Enter to add</span>
           <input
             ref={inputRef}
             className="field dump-field"
@@ -191,8 +191,9 @@ type RowProps = {
 
 function TaskRow({ item, editingArea, onEditArea, onSetArea, onRetry, onDelete }: RowProps) {
   return (
-    <li className="task-card" data-area={item.area ?? 'none'}>
-      <div className="task-card-top">
+    <li className="task-row">
+      <div className="task-line">
+        <p className="task-title">{item.title}</p>
         <button
           type="button"
           className="area-tag label"
@@ -200,13 +201,12 @@ function TaskRow({ item, editingArea, onEditArea, onSetArea, onRetry, onDelete }
           aria-label={`Area: ${item.area ? AREA_LABELS[item.area] : 'none'}. Change area`}
           onClick={onEditArea}
         >
-          [{item.area ? AREA_LABELS[item.area] : 'No area'}]
+          {item.area ? AREA_LABELS[item.area] : 'no area'}
         </button>
         <button type="button" className="icon-button" aria-label={`Delete "${item.title}"`} onClick={onDelete}>
           ×
         </button>
       </div>
-      <p className="task-title">{item.title}</p>
       {editingArea ? <AreaChips value={item.area} onChange={onSetArea} label="Choose an area" /> : null}
       {item.save === 'saving' ? (
         <span className="label" aria-live="polite">

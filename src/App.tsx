@@ -2,11 +2,9 @@ import { useState } from 'react'
 import { SignIn } from './auth/SignIn'
 import { useSession } from './auth/useSession'
 import { Alert } from './components/Alert'
-import { VibeToggle } from './components/VibeToggle'
 import { LaterScreen } from './later/LaterScreen'
 import { supabase } from './lib/supabase'
 import { routeHref, useRoute } from './lib/useRoute'
-import { useVibe } from './theme/vibe'
 
 function todayLabel(now: Date): string {
   return new Intl.DateTimeFormat('en-GB', { weekday: 'short', day: 'numeric', month: 'short' })
@@ -17,9 +15,7 @@ function todayLabel(now: Date): string {
 function App() {
   const session = useSession()
   const route = useRoute()
-  const [vibe, toggleVibe] = useVibe()
   const [signOutError, setSignOutError] = useState<string | null>(null)
-  const now = new Date()
   const signedIn = Boolean(session)
   const onLater = signedIn && route === 'later'
 
@@ -32,21 +28,15 @@ function App() {
   return (
     <main className="page">
       <div className="topbar">
-        <span className="label">{todayLabel(now)}</span>
-        <VibeToggle vibe={vibe} onToggle={toggleVibe} />
-      </div>
-
-      <div className="title-row">
-        <h1 className="wordmark">
-          <span className="wordmark-script">{onLater ? 'Later' : 'Today'}</span>
-          {onLater ? null : <span className="wordmark-number">no.{now.getDate()}</span>}
-        </h1>
+        <span className="label">{todayLabel(new Date())}</span>
         {signedIn ? (
           <a className="nav-link label" href={routeHref(onLater ? 'today' : 'later')}>
             {onLater ? '← Today' : 'Later →'}
           </a>
         ) : null}
       </div>
+
+      <h1 className="wordmark">{onLater ? 'Later' : 'Today'}</h1>
 
       {session === undefined ? (
         <p className="label" aria-live="polite">

@@ -1,4 +1,5 @@
 import { useState, type FormEvent } from 'react'
+import { Alert } from '../components/Alert'
 import { supabase } from '../lib/supabase'
 import { friendlyAuthError, looksLikeCode, looksLikeEmail } from './messages'
 
@@ -70,14 +71,7 @@ export function SignIn() {
     setError(null)
   }
 
-  const alert = error ? (
-    <div className="alert" role="alert">
-      <span className="alert-mark" aria-hidden="true">
-        !
-      </span>
-      <span>{error}</span>
-    </div>
-  ) : null
+  const alert = error ? <Alert>{error}</Alert> : null
 
   if (step === 'email') {
     return (
@@ -113,13 +107,12 @@ export function SignIn() {
   return (
     <form className="panel" onSubmit={verifyCode} noValidate>
       <span className="label">Check your email</span>
-      <h2 className="panel-title">Click the link, or type the code here.</h2>
+      <h2 className="panel-title">Click the link in the email.</h2>
       <p>
-        Sent to <strong>{email.trim()}</strong>. On a laptop the link is quickest. On the iPhone
-        app, type the code.
+        Sent to <strong>{email.trim()}</strong>. The link signs you in on this device.
       </p>
       <label className="field-label">
-        <span className="label">Code</span>
+        <span className="label">Or type a code, if your email has one</span>
         <input
           className="field field-code"
           type="text"

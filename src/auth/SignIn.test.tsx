@@ -32,7 +32,7 @@ describe('SignIn', () => {
     render(<SignIn />)
     typeEmail('name@example.com')
 
-    await screen.findByText(/click the link, or type the code/i)
+    await screen.findByText(/click the link in the email/i)
     expect(auth.signInWithOtp).toHaveBeenCalledWith(
       expect.objectContaining({
         email: 'name@example.com',
@@ -54,7 +54,7 @@ describe('SignIn', () => {
     auth.verifyOtp.mockResolvedValue({ error: null })
     render(<SignIn />)
     typeEmail('name@example.com')
-    await screen.findByText(/click the link, or type the code/i)
+    await screen.findByText(/click the link in the email/i)
 
     fireEvent.change(screen.getByLabelText(/code/i), { target: { value: '12 34 56' } })
     fireEvent.click(screen.getByRole('button', { name: /^sign in$/i }))
@@ -73,7 +73,7 @@ describe('SignIn', () => {
     auth.verifyOtp.mockResolvedValue({ error: { code: 'otp_expired', message: 'expired' } })
     render(<SignIn />)
     typeEmail('name@example.com')
-    await screen.findByText(/click the link, or type the code/i)
+    await screen.findByText(/click the link in the email/i)
 
     fireEvent.change(screen.getByLabelText(/code/i), { target: { value: '000000' } })
     fireEvent.click(screen.getByRole('button', { name: /^sign in$/i }))

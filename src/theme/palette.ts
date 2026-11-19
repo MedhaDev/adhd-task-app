@@ -2,84 +2,44 @@
  * The one place colors are defined. The app reads these at runtime and the
  * contrast tests read the same values, so a color can't change without the
  * contrast check seeing it.
+ *
+ * Look: an old notebook. Paper and ink, thin ruled lines, one red margin line.
+ * Dark mode ("carbon paper") follows the device setting, with nothing to choose.
  */
-export const colors = {
-  mutedBlack: '#1D1D1B',
-  seashell: '#EAE4DA',
-  pinkQuartz: '#EAA7C7',
-  sky: '#9ED6DF',
-  mustard: '#EAC119',
-  lavender: '#808BC5',
-  tangerine: '#ED773C',
-  tea: '#245E55',
-  redPassion: '#C63F3E',
-} as const
-
-export type Vibe = 'loud' | 'calm'
-export const VIBES: readonly Vibe[] = ['loud', 'calm']
+export type Mode = 'paper' | 'carbon'
+export const MODES: readonly Mode[] = ['paper', 'carbon']
 
 export type ThemeTokens = {
   bg: string
   text: string
-  accentOnBg: string
-  panel: string
-  onPanel: string
-  button: string
-  onButton: string
-  field: string
-  onField: string
-  alert: string
-  onAlert: string
+  muted: string
+  rule: string
+  margin: string
 }
 
-const c = colors
-
-export const themes: Record<Vibe, ThemeTokens> = {
-  loud: {
-    bg: c.mutedBlack,
-    text: c.seashell,
-    accentOnBg: c.pinkQuartz,
-    panel: c.pinkQuartz,
-    onPanel: c.mutedBlack,
-    button: c.mutedBlack,
-    onButton: c.pinkQuartz,
-    field: c.seashell,
-    onField: c.mutedBlack,
-    alert: c.tangerine,
-    onAlert: c.mutedBlack,
+export const themes: Record<Mode, ThemeTokens> = {
+  paper: {
+    bg: '#F4F0E6',
+    text: '#222120',
+    muted: '#5E5A52',
+    rule: '#CFC7B6',
+    margin: '#B23A2E',
   },
-  calm: {
-    bg: c.seashell,
-    text: c.mutedBlack,
-    accentOnBg: c.mutedBlack,
-    panel: c.mutedBlack,
-    onPanel: c.seashell,
-    button: c.pinkQuartz,
-    onButton: c.mutedBlack,
-    field: c.seashell,
-    onField: c.mutedBlack,
-    alert: c.tangerine,
-    onAlert: c.mutedBlack,
+  carbon: {
+    bg: '#1C1B19',
+    text: '#E8E2D4',
+    muted: '#A8A194',
+    rule: '#3A3732',
+    margin: '#D9675A',
   },
 }
 
-/** Each area's card color and the ink used on it (used from build step 2 on). */
-export const areaColors = {
-  work: { bg: c.sky, ink: c.mutedBlack },
-  job_search: { bg: c.pinkQuartz, ink: c.mutedBlack },
-  personal: { bg: c.mustard, ink: c.mutedBlack },
-  fun: { bg: c.tangerine, ink: c.mutedBlack },
-} as const
-
-/** Every text-on-background pairing a theme uses, for the contrast check. */
+/** Every text-on-background pairing, for the contrast check. */
 export function textPairs(t: ThemeTokens): Array<[label: string, fg: string, bg: string]> {
   return [
-    ['text on page', t.text, t.bg],
-    ['accent on page', t.accentOnBg, t.bg],
-    ['text on panel', t.onPanel, t.panel],
-    ['button text', t.onButton, t.button],
-    ['field text', t.onField, t.field],
-    ['alert text', t.onAlert, t.alert],
+    ['text on paper', t.text, t.bg],
+    ['muted text on paper', t.muted, t.bg],
+    ['red marks on paper', t.margin, t.bg],
   ]
 }
 

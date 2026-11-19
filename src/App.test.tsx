@@ -30,10 +30,4 @@ describe('App', () => {
     expect(await screen.findByText(/your 3 tasks for today will land here/i)).toBeInTheDocument()
     expect(screen.queryByText(/\d+ tasks? (in|left|total)/i)).not.toBeInTheDocument()
   })
-
-  it('has a calm/loud switch', async () => {
-    auth.getSession.mockResolvedValue({ data: { session: null } })
-    render(<App />)
-    expect(await screen.findByRole('button', { name: /vibe: loud/i })).toBeInTheDocument()
-  })
 })
