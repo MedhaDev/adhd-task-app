@@ -1,4 +1,5 @@
 import { createClient } from '@supabase/supabase-js'
+import type { Database } from './database.types'
 
 /**
  * Checks the Supabase settings before the app uses them.
@@ -27,7 +28,7 @@ export function readSupabaseConfig(env: {
 
 const { url, key } = readSupabaseConfig(import.meta.env)
 
-export const supabase = createClient(url, key, {
+export const supabase = createClient<Database>(url, key, {
   auth: {
     // Stay signed in on this device: the session is kept and refreshed automatically.
     persistSession: true,
