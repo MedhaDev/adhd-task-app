@@ -3,6 +3,8 @@ import { AREA_LABELS } from '../data/areas'
 import type { TodayTask } from '../data/today'
 import { useToday } from '../data/useToday'
 import { routeHref } from '../lib/useRoute'
+import { TimerView } from '../timer/TimerView'
+import { useTimer } from '../timer/useTimer'
 import { ProgressLine, StepList } from './Steps'
 
 function firstStep(task: TodayTask): string | null {
@@ -16,8 +18,24 @@ function nextStep(task: TodayTask): string {
 
 export function TodayScreen() {
   const today = useToday()
+  const timer = useTimer()
   const [top, ...rest] = today.active
   const regularCount = today.active.filter((t) => t.area !== 'fun').length
+
+  function startTimer(task: TodayTask) {
+    const step = task.steps.find((s) => s.done_at === null) ?? null
+    timer.start({ taskId: task.id, taskTitle: task.title, stepId: step?.id ?? null, stepBody: step?.body ?? null })
+  }
+
+  function finishFromTimer() {
+    const taskId = timer.finishTask()
+    const task = today.active.find((t) => t.id === taskId)
+    if (task) void today.finish(task)
+  }
+
+  if (timer.phase !== 'idle') {
+    return <TimerView timer={timer} onFinishTask={finishFromTimer} />
+  }
 
   if (today.loading) {
     return (
@@ -53,6 +71,12 @@ export function TodayScreen() {
         </Alert>
       ) : null}
 
+      {timer.note ? (
+        <p className="timer-note" role="status">
+          {timer.note}
+        </p>
+      ) : null}
+
       {!top ? (
         <p className="empty-state">
           Nothing in Today yet. <a href={routeHref('later')}>Pick up to 3 from Later →</a>
@@ -68,6 +92,9 @@ export function TodayScreen() {
               onAdd={(body) => today.addStepTo(top, body)}
             />
             <div className="actions">
+              <button type="button" className="button" onClick={() => startTimer(top)}>
+                Start 5 min
+              </button>
               <button type="button" className="link-button" onClick={() => void today.finish(top)}>
                 Done
               </button>
@@ -110,6 +137,10 @@ export function TodayScreen() {
           ) : null}
         </>
       )}
+
+      {timer.minutesToday > 0 ? (
+        <p className="muted shown-up">You showed up for {timer.minutesToday} min today.</p>
+      ) : null}
 
       {today.done.length > 0 ? (
         <section className="done-today" aria-label="Done today">

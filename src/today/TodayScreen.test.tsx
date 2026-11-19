@@ -15,6 +15,10 @@ vi.mock('../data/today', async (importOriginal) => ({
   ...api,
 }))
 vi.mock('../lib/supabase', () => ({ supabase: {} }))
+vi.mock('../data/timerSessions', () => ({
+  saveSession: vi.fn().mockResolvedValue(undefined),
+  fetchSessionsSince: vi.fn().mockResolvedValue([]),
+}))
 
 const { TodayScreen } = await import('./TodayScreen')
 
@@ -25,6 +29,7 @@ const active = [
 ]
 
 beforeEach(() => {
+  window.localStorage.clear()
   Object.values(api).forEach((fn) => fn.mockReset())
   api.resetToday.mockResolvedValue(undefined)
   api.fetchToday.mockResolvedValue({ active, done: [{ id: 'd', title: 'Reply to recruiter', finished_at: 'x' }] })
@@ -134,5 +139,12 @@ describe('TodayScreen', () => {
   it('shows where to pick up the other tasks', async () => {
     render(<TodayScreen />)
     expect(await screen.findByText(/next: open the file/i)).toBeInTheDocument()
+  })
+
+  it('starts the 5-minute timer on the first unticked step', async () => {
+    render(<TodayScreen />)
+    fireEvent.click(await screen.findByRole('button', { name: /start 5 min/i }))
+    expect(screen.getByRole('timer')).toHaveTextContent('5:00')
+    expect(screen.getByText('open saved jobs')).toBeInTheDocument()
   })
 })

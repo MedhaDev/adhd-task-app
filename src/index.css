@@ -477,3 +477,50 @@ button {
     transition: none;
   }
 }
+
+/* ---------- Timer ---------- */
+.timer {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  border-top: 1px solid var(--rule);
+  padding-top: var(--space-3);
+}
+
+.timer-task {
+  margin: 0;
+  font-size: 1.15rem;
+  font-weight: 600;
+  overflow-wrap: anywhere;
+}
+
+.timer-clock {
+  margin: var(--space-3) 0;
+  font-size: clamp(4rem, 22vw, 7rem);
+  font-weight: 300;
+  line-height: 1;
+  letter-spacing: -0.02em;
+  font-variant-numeric: tabular-nums;
+}
+
+.timer-ended {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  margin-top: var(--space-2);
+}
+
+.timer-message {
+  margin: 0;
+  font-size: 1.1rem;
+}
+
+.timer-note {
+  margin: 0;
+  padding-left: 10px;
+  border-left: 2px solid var(--margin);
+}
+
+.shown-up {
+  margin-top: var(--space-2);
+}
