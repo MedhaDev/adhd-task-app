@@ -3,9 +3,15 @@ import { AREA_LABELS } from '../data/areas'
 import type { TodayTask } from '../data/today'
 import { useToday } from '../data/useToday'
 import { routeHref } from '../lib/useRoute'
+import { ProgressLine, StepList } from './Steps'
 
 function firstStep(task: TodayTask): string | null {
   return task.steps.find((s) => s.position === 0)?.body ?? null
+}
+
+/** The first step not yet ticked, so each task shows where to pick it up. */
+function nextStep(task: TodayTask): string {
+  return (task.steps.find((s) => s.done_at === null) ?? task.steps[task.steps.length - 1]).body
 }
 
 export function TodayScreen() {
@@ -56,7 +62,11 @@ export function TodayScreen() {
           <article className="today-top" aria-label={`Start here: ${top.title}`}>
             <span className="label">Start here{top.area ? ` · ${AREA_LABELS[top.area]}` : ''}</span>
             <h2 className="today-top-title">→ {top.title}</h2>
-            {firstStep(top) ? <p className="muted">first step: {firstStep(top)}</p> : null}
+            <StepList
+              steps={top.steps}
+              onToggle={(step) => void today.toggleStep(top, step)}
+              onAdd={(body) => today.addStepTo(top, body)}
+            />
             <div className="actions">
               <button type="button" className="link-button" onClick={() => void today.finish(top)}>
                 Done
@@ -75,6 +85,8 @@ export function TodayScreen() {
                     <p className="task-title">{task.title}</p>
                     {task.area ? <span className="label">{AREA_LABELS[task.area]}</span> : null}
                   </div>
+                  {firstStep(task) ? <p className="muted step-hint">next: {nextStep(task)}</p> : null}
+                  <ProgressLine steps={task.steps} />
                   <div className="actions">
                     <button type="button" className="link-button label" onClick={() => void today.putFirst(task)}>
                       Start here
