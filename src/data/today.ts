@@ -85,3 +85,24 @@ export function moveErrorMessage(error: unknown): string {
   if (text.includes('task_not_in_later')) return 'That task is already in Today or done.'
   return "Couldn't move it to Today. Check your connection and try again."
 }
+
+/** Adds a step. The id is made on the device, so a retry can't add it twice. */
+export async function addStep(step: { id: string; taskId: string; body: string; position: number }): Promise<void> {
+  const { error } = await supabase
+    .from('steps')
+    .insert({ id: step.id, task_id: step.taskId, body: step.body, position: step.position })
+  if (error && error.code !== '23505') throw error
+}
+
+export async function setStepDone(stepId: string, done: boolean): Promise<void> {
+  const { error } = await supabase
+    .from('steps')
+    .update({ done_at: done ? new Date().toISOString() : null })
+    .eq('id', stepId)
+  if (error) throw error
+}
+
+/** How far along a task is, from its steps. */
+export function progress(steps: Step[]): { done: number; total: number } {
+  return { done: steps.filter((s) => s.done_at !== null).length, total: steps.length }
+}
