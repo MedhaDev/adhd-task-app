@@ -2,7 +2,9 @@ import { useEffect } from 'react'
 import { Alert } from '../components/Alert'
 import { formatClock } from './clock'
 import type { useParkingLot } from '../data/useParkingLot'
+import { NoiseControls } from './NoiseControls'
 import { ParkBox, ParkedReview } from './ParkingLot'
+import { useNoise } from './useNoise'
 import type { useTimer } from './useTimer'
 
 type Timer = ReturnType<typeof useTimer>
@@ -14,6 +16,8 @@ const KIND_LABEL = { starter: 'Just 5 minutes', focus: 'Focus round', break: 'Br
 export function TimerView({ timer, lot, onFinishTask }: { timer: Timer; lot: Lot; onFinishTask: () => void }) {
   const active = timer.active
   const kind = active?.session.kind ?? 'starter'
+  // Noise plays during starters and focus rounds; breaks and "time's up" are quiet.
+  const noise = useNoise(timer.phase === 'running' && kind !== 'break')
 
   // Show the countdown in the browser tab, so it's visible from any other tab.
   useEffect(() => {
@@ -44,6 +48,7 @@ export function TimerView({ timer, lot, onFinishTask }: { timer: Timer; lot: Lot
             {formatClock(timer.remaining)}
           </p>
           <ParkBox lot={lot} sessionId={active.session.id} />
+          {kind !== 'break' ? <NoiseControls noise={noise} /> : null}
           <div className="actions">
             <button type="button" className="link-button" onClick={timer.stop}>
               Stop

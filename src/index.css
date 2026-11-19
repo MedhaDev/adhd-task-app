@@ -543,3 +543,22 @@ button {
   flex-direction: column;
   gap: 6px;
 }
+
+/* ---------- Background noise ---------- */
+.noise {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-bottom: var(--space-2);
+}
+
+.noise-label {
+  align-self: center;
+  margin-right: 4px;
+}
+
+.noise-volume input {
+  width: 100%;
+  max-width: 260px;
+  accent-color: var(--text);
+}
