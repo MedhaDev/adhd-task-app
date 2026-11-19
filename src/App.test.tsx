@@ -9,6 +9,7 @@ const auth = vi.hoisted(() => ({
   signOut: vi.fn(),
 }))
 vi.mock('./lib/supabase', () => ({ supabase: { auth } }))
+vi.mock('./today/TodayScreen', () => ({ TodayScreen: () => <p>today screen</p> }))
 
 const { default: App } = await import('./App')
 
@@ -24,10 +25,10 @@ describe('App', () => {
     expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent(/today/i)
   })
 
-  it('shows Today when signed in, with no task count', async () => {
+  it('shows Today and a link to Later when signed in', async () => {
     auth.getSession.mockResolvedValue({ data: { session: { user: { id: 'u1' } } } })
     render(<App />)
-    expect(await screen.findByText(/your 3 tasks for today will land here/i)).toBeInTheDocument()
-    expect(screen.queryByText(/\d+ tasks? (in|left|total)/i)).not.toBeInTheDocument()
+    expect(await screen.findByText('today screen')).toBeInTheDocument()
+    expect(screen.getByRole('link', { name: /later/i })).toHaveAttribute('href', '#/later')
   })
 })

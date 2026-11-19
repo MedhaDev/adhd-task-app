@@ -5,6 +5,7 @@ import { Alert } from './components/Alert'
 import { LaterScreen } from './later/LaterScreen'
 import { supabase } from './lib/supabase'
 import { routeHref, useRoute } from './lib/useRoute'
+import { TodayScreen } from './today/TodayScreen'
 
 function todayLabel(now: Date): string {
   return new Intl.DateTimeFormat('en-GB', { weekday: 'short', day: 'numeric', month: 'short' })
@@ -47,7 +48,7 @@ function App() {
       ) : onLater ? (
         <LaterScreen />
       ) : (
-        <p className="empty-state">Your 3 tasks for today will land here.</p>
+        <TodayScreen />
       )}
 
       {signedIn ? (
