@@ -1,5 +1,5 @@
 import { useCallback, useState } from 'react'
-import { themes, VIBES, type Vibe } from './palette'
+import { areaColors, themes, VIBES, type Vibe } from './palette'
 
 const STORAGE_KEY = 'today.vibe'
 export const DEFAULT_VIBE: Vibe = 'loud'
@@ -41,6 +41,10 @@ export function applyVibe(vibe: Vibe, root: HTMLElement = document.documentEleme
   const tokens = themes[vibe]
   for (const key of Object.keys(TOKEN_TO_CSS) as Array<keyof typeof TOKEN_TO_CSS>) {
     root.style.setProperty(TOKEN_TO_CSS[key], tokens[key])
+  }
+  for (const [area, { bg, ink }] of Object.entries(areaColors)) {
+    root.style.setProperty(`--area-${area}`, bg)
+    root.style.setProperty('--area-ink', ink)
   }
   root.dataset.vibe = vibe
   document.querySelector('meta[name="theme-color"]')?.setAttribute('content', tokens.bg)
