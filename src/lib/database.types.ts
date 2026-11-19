@@ -220,7 +220,12 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      move_to_today: {
+        Args: { p_first_step: string; p_task_id: string }
+        Returns: undefined
+      }
+      reset_today: { Args: { p_since: string }; Returns: undefined }
+      start_here: { Args: { p_task_id: string }; Returns: undefined }
     }
     Enums: {
       parked_resolution: 'kept' | 'deleted'
