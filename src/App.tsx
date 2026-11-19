@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { SignIn } from './auth/SignIn'
 import { useSession } from './auth/useSession'
 import { Alert } from './components/Alert'
+import { ExportButton } from './components/ExportButton'
 import { LaterScreen } from './later/LaterScreen'
 import { supabase } from './lib/supabase'
 import { routeHref, useRoute } from './lib/useRoute'
@@ -54,6 +55,7 @@ function App() {
       {signedIn ? (
         <footer className="footer">
           {signOutError ? <Alert>{signOutError}</Alert> : null}
+          <ExportButton />
           <button className="link-button label" type="button" onClick={signOut}>
             Sign out of this device
           </button>

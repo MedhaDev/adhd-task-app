@@ -562,3 +562,16 @@ button {
   max-width: 260px;
   accent-color: var(--text);
 }
+
+.footer {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.export {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 4px 12px;
+}
