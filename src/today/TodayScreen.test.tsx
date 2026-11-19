@@ -15,6 +15,12 @@ vi.mock('../data/today', async (importOriginal) => ({
   ...api,
 }))
 vi.mock('../lib/supabase', () => ({ supabase: {} }))
+vi.mock('../data/parked', async (importOriginal) => ({
+  ...(await importOriginal<typeof import('../data/parked')>()),
+  fetchUnresolvedParked: vi.fn().mockResolvedValue([]),
+  insertParked: vi.fn().mockResolvedValue(undefined),
+  resolveParked: vi.fn().mockResolvedValue(undefined),
+}))
 vi.mock('../data/timerSessions', () => ({
   saveSession: vi.fn().mockResolvedValue(undefined),
   fetchSessionsSince: vi.fn().mockResolvedValue([]),

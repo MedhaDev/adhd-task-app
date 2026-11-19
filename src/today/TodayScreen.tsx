@@ -3,6 +3,8 @@ import { AREA_LABELS } from '../data/areas'
 import type { TodayTask } from '../data/today'
 import { useToday } from '../data/useToday'
 import { routeHref } from '../lib/useRoute'
+import { useParkingLot } from '../data/useParkingLot'
+import { ParkedReview } from '../timer/ParkingLot'
 import { TimerView } from '../timer/TimerView'
 import { useTimer } from '../timer/useTimer'
 import { ProgressLine, StepList } from './Steps'
@@ -19,6 +21,7 @@ function nextStep(task: TodayTask): string {
 export function TodayScreen() {
   const today = useToday()
   const timer = useTimer()
+  const lot = useParkingLot()
   const [top, ...rest] = today.active
   const regularCount = today.active.filter((t) => t.area !== 'fun').length
 
@@ -34,7 +37,7 @@ export function TodayScreen() {
   }
 
   if (timer.phase !== 'idle') {
-    return <TimerView timer={timer} onFinishTask={finishFromTimer} />
+    return <TimerView timer={timer} lot={lot} onFinishTask={finishFromTimer} />
   }
 
   if (today.loading) {
@@ -76,6 +79,8 @@ export function TodayScreen() {
           {timer.note}
         </p>
       ) : null}
+
+      <ParkedReview lot={lot} />
 
       {!top ? (
         <p className="empty-state">

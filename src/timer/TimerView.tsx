@@ -1,14 +1,17 @@
 import { useEffect } from 'react'
 import { Alert } from '../components/Alert'
 import { formatClock } from './clock'
+import type { useParkingLot } from '../data/useParkingLot'
+import { ParkBox, ParkedReview } from './ParkingLot'
 import type { useTimer } from './useTimer'
 
 type Timer = ReturnType<typeof useTimer>
+type Lot = ReturnType<typeof useParkingLot>
 
 const KIND_LABEL = { starter: 'Just 5 minutes', focus: 'Focus round', break: 'Break' } as const
 
 /** The countdown, or the gentle choice when time is up. */
-export function TimerView({ timer, onFinishTask }: { timer: Timer; onFinishTask: () => void }) {
+export function TimerView({ timer, lot, onFinishTask }: { timer: Timer; lot: Lot; onFinishTask: () => void }) {
   const active = timer.active
   const kind = active?.session.kind ?? 'starter'
 
@@ -40,6 +43,7 @@ export function TimerView({ timer, onFinishTask }: { timer: Timer; onFinishTask:
           <p className="timer-clock" role="timer" aria-live="off" aria-label={`${formatClock(timer.remaining)} left`}>
             {formatClock(timer.remaining)}
           </p>
+          <ParkBox lot={lot} sessionId={active.session.id} />
           <div className="actions">
             <button type="button" className="link-button" onClick={timer.stop}>
               Stop
@@ -53,6 +57,7 @@ export function TimerView({ timer, onFinishTask }: { timer: Timer; onFinishTask:
         </>
       ) : (
         <div className="timer-ended" role="status">
+          <ParkedReview lot={lot} />
           {kind === 'starter' ? (
             <>
               <p className="timer-message">5 minutes done. You started. Keep going?</p>
