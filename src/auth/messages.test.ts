@@ -1,16 +1,30 @@
 import { describe, expect, it } from 'vitest'
-import { friendlyAuthError, looksLikeCode, looksLikeEmail } from './messages'
+import { friendlyAuthError, looksLikeEmail } from './messages'
 
 describe('friendlyAuthError', () => {
-  it('explains the email rate limit', () => {
-    expect(friendlyAuthError({ status: 429, message: 'email rate limit exceeded' })).toMatch(
-      /wait a few minutes/i,
+  it('explains the rate limit', () => {
+    expect(friendlyAuthError({ status: 429, message: 'email rate limit exceeded' })).toMatch(/wait a few minutes/i)
+  })
+
+  it('explains a wrong email or password (not as an expired link)', () => {
+    expect(friendlyAuthError({ code: 'invalid_credentials', message: 'Invalid login credentials' })).toMatch(
+      /don't match/i,
     )
   })
 
-  it('explains an expired or wrong code', () => {
-    expect(friendlyAuthError({ code: 'otp_expired', message: 'Token has expired or is invalid' })).toMatch(
-      /newest email/i,
+  it('explains a too-short password', () => {
+    expect(friendlyAuthError({ code: 'weak_password', message: 'Password should be at least 6 characters' })).toMatch(
+      /at least 10 characters/i,
+    )
+  })
+
+  it('explains an expired link', () => {
+    expect(friendlyAuthError({ code: 'otp_expired', message: 'Token has expired or is invalid' })).toMatch(/expired/i)
+  })
+
+  it('explains when a fresh sign-in is needed before changing the password', () => {
+    expect(friendlyAuthError({ code: 'reauthentication_needed', message: 'reauthentication needed' })).toMatch(
+      /sign back in/i,
     )
   })
 
@@ -19,21 +33,13 @@ describe('friendlyAuthError', () => {
   })
 
   it('never shows a raw error', () => {
-    expect(friendlyAuthError({ message: 'weird internal thing' })).toBe(
-      'Something went wrong. Try again in a moment.',
-    )
+    expect(friendlyAuthError({ message: 'weird internal thing' })).toBe('Something went wrong. Try again in a moment.')
   })
 })
 
-describe('input checks', () => {
+describe('looksLikeEmail', () => {
   it('accepts a normal email and rejects junk', () => {
     expect(looksLikeEmail(' name@example.com ')).toBe(true)
     expect(looksLikeEmail('name@')).toBe(false)
-  })
-
-  it('accepts 6 to 10 digit codes only', () => {
-    expect(looksLikeCode('123456')).toBe(true)
-    expect(looksLikeCode('12345')).toBe(false)
-    expect(looksLikeCode('12a456')).toBe(false)
   })
 })

@@ -21,7 +21,7 @@ describe('App', () => {
   it('shows the sign-in form when signed out', async () => {
     auth.getSession.mockResolvedValue({ data: { session: null } })
     render(<App />)
-    expect(await screen.findByText(/where should the sign.in email go/i)).toBeInTheDocument()
+    expect(await screen.findByText(/sign in to today/i)).toBeInTheDocument()
     expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent(/today/i)
   })
 
