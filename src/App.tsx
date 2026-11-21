@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { SetPassword } from './auth/SetPassword'
 import { SignIn } from './auth/SignIn'
 import { useSession } from './auth/useSession'
 import { Alert } from './components/Alert'
@@ -56,6 +57,7 @@ function App() {
         <footer className="footer">
           {signOutError ? <Alert>{signOutError}</Alert> : null}
           <ExportButton />
+          <SetPassword email={session?.user.email ?? ''} />
           <button className="link-button label" type="button" onClick={signOut}>
             Sign out of this device
           </button>

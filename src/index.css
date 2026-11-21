@@ -575,3 +575,17 @@ button {
   align-items: baseline;
   gap: 4px 12px;
 }
+
+.set-password {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 4px 12px;
+}
+
+.set-password-form {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: var(--space-1) 0 var(--space-2);
+}
