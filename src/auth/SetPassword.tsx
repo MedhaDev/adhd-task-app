@@ -55,7 +55,7 @@ export function SetPassword({ email }: { email: string }) {
             setSaved(false)
           }}
         >
-          Set a password for the iPhone app
+          Change password
         </button>
         {saved ? (
           <span className="muted label" role="status">
@@ -68,7 +68,7 @@ export function SetPassword({ email }: { email: string }) {
 
   return (
     <form className="set-password-form" onSubmit={submit} noValidate>
-      <span className="label">New password · use it to sign in on the iPhone app</span>
+      <span className="label">New password · for signing in on the iPhone app</span>
       {/* A hidden username helps iPhone Keychain save the password with the right email. */}
       <input type="email" name="email" autoComplete="username" hidden readOnly value={email} />
       <label className="field-label">

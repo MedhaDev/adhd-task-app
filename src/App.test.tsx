@@ -47,7 +47,7 @@ describe('App', () => {
     render(<App />)
     await screen.findByText('today screen')
     expect(screen.queryByText(/download my data/i)).not.toBeInTheDocument()
-    expect(screen.queryByText(/set a password/i)).not.toBeInTheDocument()
+    expect(screen.queryByText(/change password/i)).not.toBeInTheDocument()
     expect(screen.queryByText(/sign out/i)).not.toBeInTheDocument()
   })
 
@@ -61,7 +61,7 @@ describe('App', () => {
     })
     expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent(/settings/i)
     expect(screen.getByRole('button', { name: /download my data/i })).toBeInTheDocument()
-    expect(screen.getByRole('button', { name: /set a password/i })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: /change password/i })).toBeInTheDocument()
     expect(screen.getByRole('button', { name: /sign out of this device/i })).toBeInTheDocument()
     expect(screen.getByRole('link', { name: /today/i })).toHaveAttribute('href', '#/')
   })

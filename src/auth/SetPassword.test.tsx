@@ -8,7 +8,7 @@ const { SetPassword } = await import('./SetPassword')
 
 function open() {
   render(<SetPassword email="name@example.com" />)
-  fireEvent.click(screen.getByRole('button', { name: /set a password/i }))
+  fireEvent.click(screen.getByRole('button', { name: /change password/i }))
 }
 
 function type(password: string, again = password) {
