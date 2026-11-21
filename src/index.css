@@ -606,3 +606,9 @@ button {
 .settings .task-row {
   padding: 14px 0;
 }
+
+/* The settings dots sit at the very bottom of the page, after the content. */
+.page-end {
+  margin-top: auto;
+  padding-top: var(--space-4);
+}

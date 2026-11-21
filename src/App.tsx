@@ -24,16 +24,9 @@ function App() {
       <div className="topbar">
         <span className="label">{todayLabel(new Date())}</span>
         {signedIn ? (
-          <nav className="topbar-nav">
-            <a className="nav-link label" href={routeHref(screen === 'today' ? 'later' : 'today')}>
-              {screen === 'today' ? 'Later →' : '← Today'}
-            </a>
-            {screen !== 'settings' ? (
-              <a className="nav-link label nav-more" href={routeHref('settings')} aria-label="Settings">
-                ···
-              </a>
-            ) : null}
-          </nav>
+          <a className="nav-link label" href={routeHref(screen === 'today' ? 'later' : 'today')}>
+            {screen === 'today' ? 'Later →' : '← Today'}
+          </a>
         ) : null}
       </div>
 
@@ -52,6 +45,15 @@ function App() {
       ) : (
         <TodayScreen />
       )}
+
+      {/* Rarely used, so it sits quietly at the very bottom, after everything else. */}
+      {signedIn && screen !== 'settings' ? (
+        <footer className="page-end">
+          <a className="nav-link label nav-more" href={routeHref('settings')} aria-label="Settings">
+            ···
+          </a>
+        </footer>
+      ) : null}
     </main>
   )
 }
